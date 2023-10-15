@@ -15,6 +15,6 @@ server.use(userRouter); // Sub-routing to user-control
 server.use(taskRouter); //Sub-routing to task-control
 
 //Choosing the port
-server.listen(8000, () => {
+server.listen(process.env.PORT || 8000, () => {
   console.log("Server Started");
 });
