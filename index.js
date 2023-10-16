@@ -6,7 +6,9 @@ import taskRouter from "./modules/task/task.routing.js"; //Task routing module
 import connection from "./Database/connection.js"; //Database Connection
 
 //Starting a new server
+const cors = require("cors");
 const server = express();
+server.use(cors({}));
 //Starting database
 connection();
 //Middleware
