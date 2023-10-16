@@ -19,7 +19,7 @@ export async function verification(Email) {
     to: Email, // list of receivers
     subject: "Verification Mail", // Subject line
     html: `<h1>Verification Email</h1>
-            </div>This mail is to <a href="http://localhost:8000/user/verify/${Email}">verify your Email </a><div>
+            </div>This mail is to <a href="https://task-app-nkax.onrender.com/user/verify/${Email}">verify your Email </a><div>
     `, // html body
   });
 
