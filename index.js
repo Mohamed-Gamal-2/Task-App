@@ -4,11 +4,10 @@ import express from "express";
 import userRouter from "./modules/user/user.routing.js"; //User routing module
 import taskRouter from "./modules/task/task.routing.js"; //Task routing module
 import connection from "./Database/connection.js"; //Database Connection
-
+import cors from "cors";
 //Starting a new server
-const cors = require("cors");
 const server = express();
-server.use(cors({}));
+server.use(cors());
 //Starting database
 connection();
 //Middleware
