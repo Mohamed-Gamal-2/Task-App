@@ -23,7 +23,7 @@ const addTask = async (req, res) => {
         { $push: { tasksAdded: addedTask[0]._id } }
       );
       await userModel.updateOne(
-        { _id: req.body.assignTo },
+        { Email: req.body.assignTo },
         { $push: { tasksAssigned: addedTask[0]._id } }
       );
       res
@@ -123,10 +123,19 @@ const deleteTask = async (req, res) => {
 //----------Get tasks---------------
 const getTasks = async (req, res) => {
   try {
-    const alltasks = await taskModel
-      .find()
-      .populate("userID")
-      .populate("assignTo");
+    const alltasks = await taskModel.find().populate("userID");
+
+    // .aggregate([
+    //   {
+    //     $lookup: {
+    //       from: userModel,
+    //       localField: "assignTo",
+    //       foreignField: "Email",
+    //       as: "assignTo",
+    //     },
+    //   },
+    // ]);
+    // .populate("assignTo");
     res.status(200).json({ Message: "All tasks available", alltasks });
   } catch (error) {
     res.status(400).json({ Message: error });

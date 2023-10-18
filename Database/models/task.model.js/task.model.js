@@ -8,7 +8,7 @@ const taskSchema = new mongoose.Schema(
     description: String,
     status: String, //toDo, Doing, Done
     userID: { type: mongoose.Types.ObjectId, ref: "User" },
-    assignTo: { type: mongoose.Types.ObjectId, ref: "User" },
+    assignTo: { type: String },
     deadline: { type: Date, require: true },
     finished: Date,
   },
