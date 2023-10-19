@@ -12,24 +12,30 @@ const addTask = async (req, res) => {
     const { token } = req.headers;
     const tokenFlag = jwt.verify(token, "AppTaskSecret");
     const user = await userModel.findOne({ _id: tokenFlag.payload.ID });
+    const assignedToUser = await userModel.findOne({
+      Email: req.body.assignTo,
+    });
     if (user.isLoggedin) {
-      const userid = tokenFlag.payload.ID;
-      const addedTask = await taskModel.insertMany({
-        ...req.body,
-        userID: userid,
-      });
-      await userModel.updateOne(
-        { _id: userid },
-        { $push: { tasksAdded: addedTask[0]._id } }
-      );
-      await userModel.updateOne(
-        { Email: req.body.assignTo },
-        { $push: { tasksAssigned: addedTask[0]._id } }
-      );
-      res
-        .status(201)
-        .json({ Message: "Task has been added successfully", addedTask });
-    } else res.status(400).json({ Message: "Please sign in" });
+      if (assignedToUser) {
+        const userid = tokenFlag.payload.ID;
+        const addedTask = await taskModel.insertMany({
+          ...req.body,
+          userID: userid,
+        });
+        await userModel.updateOne(
+          { _id: userid },
+          { $push: { tasksAdded: addedTask[0]._id } }
+        );
+        await userModel.updateOne(
+          { Email: req.body.assignTo },
+          { $push: { tasksAssigned: addedTask[0]._id } }
+        );
+        res
+          .status(201)
+          .json({ Message: "Task has been added successfully", addedTask });
+      } else
+        res.status(404).json({ Message: "No such user to assign task to" });
+    } else res.status(401).json({ Message: "Please sign in" });
   } catch (error) {
     res.status(400).json({ Message: error });
   }
