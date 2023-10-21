@@ -6,7 +6,9 @@ const authentication = (req, res, next) => {
   const { token } = req.headers;
   if (token) {
     try {
-      const tokenFlag = jwt.verify(token, "AppTaskSecret");
+      const tokenFlag = jwt.verify(token, "AppTaskSecret", {
+        algorithms: ["RS256", "HS256"],
+      });
       if (tokenFlag) next();
     } catch (err) {
       res.status(400).json({ Message: "Invalid token" });
