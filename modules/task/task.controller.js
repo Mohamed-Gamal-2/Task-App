@@ -10,7 +10,9 @@ import jwt from "jsonwebtoken";
 const addTask = async (req, res) => {
   try {
     const { token } = req.headers;
-    const tokenFlag = jwt.verify(token, "AppTaskSecret");
+    const tokenFlag = jwt.verify(token, "AppTaskSecret", {
+      algorithms: ["RS256", "HS256"],
+    });
     const user = await userModel.findOne({ _id: tokenFlag.payload.ID });
     const assignedToUser = await userModel.findOne({
       Email: req.body.assignTo,
