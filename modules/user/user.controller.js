@@ -224,6 +224,7 @@ const userLogout = async (req, res) => {
 //----------ByGoogle----------------
 const googleLogin = async function (req, res) {
   const { tokenId, googleId } = req.body;
+  console.log();
   client
     .verifyIdToken({
       idToken: tokenId,
@@ -233,7 +234,7 @@ const googleLogin = async function (req, res) {
     .then(async (result) => {
       const { payload } = result;
       if (payload.email_verified) {
-        const user = await userModel.findOne({ googleId });
+        const user = await userModel.findOne({ Email: email });
         if (user) {
           //----------------------------------------
           const token = jwt.sign(
@@ -256,13 +257,13 @@ const googleLogin = async function (req, res) {
           //----------------------------------------
         } else {
           const newUser = new userModel({
-            name: payload.name,
-            email: payload.email,
+            userName: payload.userName,
+            Email: payload.Email,
             googleId,
             isVerified: true,
             password: nanoid(),
           });
-          const savedUser = await newUser.save();
+          const savedUser = await userModel.insertOne({ newUser });
           const token = jwt.sign(
             {
               payload: {
