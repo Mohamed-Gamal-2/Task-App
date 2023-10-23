@@ -223,7 +223,7 @@ const userLogout = async (req, res) => {
 };
 //----------ByGoogle----------------
 const googleLogin = async function (req, res) {
-  const { tokenId } = req.body;
+  const { tokenId, googleId } = req.body;
   client
     .verifyIdToken({
       idToken: tokenId,
