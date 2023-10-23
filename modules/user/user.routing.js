@@ -11,6 +11,7 @@ import {
   deleteUser,
   softDelete,
   userLogout,
+  googleLogin,
 } from "./user.controller.js"; //Logic from Controller
 import { validateBody, validateParams } from "../../middleware/validatoin.js"; // Validation middleware
 import {
@@ -47,6 +48,8 @@ userRouter.patch(
 userRouter.delete("/user/delete", deleteUser);
 userRouter.delete("/user/softdelete", softDelete);
 userRouter.get("/user/logout", userLogout);
+// byGoogle
+userRouter.post("/googleLogin", googleLogin);
 
 //Exporting
 export default userRouter;

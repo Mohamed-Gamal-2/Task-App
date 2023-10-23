@@ -23,6 +23,7 @@ const userSchema = new mongoose.Schema(
     tasksAdded: [{ type: mongoose.Types.ObjectId, ref: "Task" }],
     tasksAssigned: [{ type: mongoose.Types.ObjectId, ref: "Task" }],
     isLoggedin: Boolean,
+    googleId: String,
   },
   { timestamps: true }
 );

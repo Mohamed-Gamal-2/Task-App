@@ -2,9 +2,16 @@
 import userModel from "../../Database/models/user.model.js/user.model.js";
 import { verification } from "../../utilities/Verfication.js";
 
+// google-auth-library
+import { OAuth2Client } from "google-auth-library";
+const client = new OAuth2Client(
+  "336014810709-n50q2ohjhitbi1a15iu14jhvtkqqp3ru.apps.googleusercontent.com"
+);
+
 //Importing third party modules
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { nanoid } from "nanoid";
 
 //Logic
 //----------Signup----------------
@@ -214,6 +221,75 @@ const userLogout = async (req, res) => {
     res.status(400).json({ Message: error });
   }
 };
+//----------ByGoogle----------------
+const googleLogin = async function (req, res) {
+  const { tokenId } = req.body;
+  client
+    .verifyIdToken({
+      idToken: tokenId,
+      audience:
+        "336014810709-n50q2ohjhitbi1a15iu14jhvtkqqp3ru.apps.googleusercontent.com",
+    })
+    .then(async (result) => {
+      const { payload } = result;
+      if (payload.email_verified) {
+        const user = await userModel.findOne({ googleId });
+        if (user) {
+          //----------------------------------------
+          const token = jwt.sign(
+            {
+              payload: {
+                userName: matchedUser.userName,
+                Email: matchedUser.Email,
+                ID: matchedUser._id,
+                isLoggedin: matchedUser.isLoggedin,
+              },
+            },
+            "AppTaskSecret"
+          );
+
+          res.status(200).json({
+            Message: "welcome back",
+            token,
+            data: { _id: user._id, email: user.Email },
+          });
+          //----------------------------------------
+        } else {
+          const newUser = new userModel({
+            name: payload.name,
+            email: payload.email,
+            googleId,
+            isVerified: true,
+            password: nanoid(),
+          });
+          const savedUser = await newUser.save();
+          const token = jwt.sign(
+            {
+              payload: {
+                userName: matchedUser.userName,
+                Email: matchedUser.Email,
+                ID: matchedUser._id,
+                isLoggedin: matchedUser.isLoggedin,
+              },
+            },
+            "AppTaskSecret"
+          );
+
+          res.status(200).json({
+            Message: "welcome back",
+            token,
+            data: { _id: savedUser._id, email: savedUser.Email },
+          });
+        }
+      } else {
+        res.json({ message: "email not verified" });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+//----------ByGoogle----------------
 
 //Export
 export {
@@ -225,4 +301,5 @@ export {
   deleteUser,
   softDelete,
   userLogout,
+  googleLogin,
 };
