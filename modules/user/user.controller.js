@@ -263,7 +263,7 @@ const googleLogin = async function (req, res) {
             isVerified: true,
             password: nanoid(),
           });
-          const savedUser = await userModel.insertOne({ newUser });
+          const savedUser = await userModel.insertOne(newUser);
           const token = jwt.sign(
             {
               payload: {
