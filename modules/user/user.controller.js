@@ -224,56 +224,59 @@ const userLogout = async (req, res) => {
 //----------ByGoogle----------------
 const googleLogin = async function (req, res) {
   // const { tokenId, googleId } = req.body;
+  try {
+    let { userName, Email, password, age, gander, isVerified } = req.body;
+    const user = await userModel.findOne({ Email });
+    if (user) {
+      //----------------------------------------
 
-  let { userName, Email, password, age, gander, isVerified } = req.body;
-  const user = await userModel.findOne({ Email });
-  if (user) {
-    //----------------------------------------
-
-    const token = jwt.sign(
-      {
-        payload: {
-          userName,
-          Email,
-          ID: user._id,
-          isLoggedin: true,
+      const token = jwt.sign(
+        {
+          payload: {
+            userName,
+            Email,
+            ID: user._id,
+            isLoggedin: true,
+          },
         },
-      },
-      "AppTaskSecret"
-    );
+        "AppTaskSecret"
+      );
 
-    res.status(200).json({
-      Message: "welcome back",
-      token,
-      data: { _id: user._id, email: user.Email },
-    });
-    //----------------------------------------
-  } else {
-    const savedUser = await userModel.insertOne({
-      userName,
-      Email,
-      age,
-      gender,
-      isVerified: true,
-      password: nanoid(),
-    });
-    const token = jwt.sign(
-      {
-        payload: {
-          userName,
-          Email,
-          ID: savedUser._id,
-          isLoggedin: true,
+      res.status(200).json({
+        Message: "welcome back",
+        token,
+        data: { _id: user._id, email: user.Email },
+      });
+      //----------------------------------------
+    } else {
+      const savedUser = await userModel.insertOne({
+        userName,
+        Email,
+        age,
+        gender,
+        isVerified: true,
+        password: nanoid(),
+      });
+      const token = jwt.sign(
+        {
+          payload: {
+            userName,
+            Email,
+            ID: savedUser._id,
+            isLoggedin: true,
+          },
         },
-      },
-      "AppTaskSecret"
-    );
+        "AppTaskSecret"
+      );
 
-    res.status(200).json({
-      Message: "welcome back",
-      token,
-      data: { _id: savedUser._id, email: savedUser.Email },
-    });
+      res.status(200).json({
+        Message: "welcome back",
+        token,
+        data: { _id: savedUser._id, email: savedUser.Email },
+      });
+    }
+  } catch (error) {
+    res.json({ Message: error });
   }
 };
 //----------ByGoogle----------------
