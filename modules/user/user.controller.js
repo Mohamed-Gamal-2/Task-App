@@ -253,7 +253,7 @@ const googleLogin = async function (req, res) {
         userName,
         Email,
         age,
-        gender,
+        gander,
         isVerified: true,
         password: nanoid(),
       });
@@ -276,7 +276,7 @@ const googleLogin = async function (req, res) {
       });
     }
   } catch (error) {
-    res.json({ Message: error });
+    res.json({ Messagess: error });
   }
 };
 //----------ByGoogle----------------
