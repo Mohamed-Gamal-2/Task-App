@@ -223,72 +223,58 @@ const userLogout = async (req, res) => {
 };
 //----------ByGoogle----------------
 const googleLogin = async function (req, res) {
-  const { tokenId, googleId } = req.body;
-  console.log();
-  client
-    .verifyIdToken({
-      idToken: tokenId,
-      audience:
-        "336014810709-n50q2ohjhitbi1a15iu14jhvtkqqp3ru.apps.googleusercontent.com",
-    })
-    .then(async (result) => {
-      const { payload } = result;
-      if (payload.email_verified) {
-        const user = await userModel.findOne({ Email: email });
-        if (user) {
-          //----------------------------------------
-          const token = jwt.sign(
-            {
-              payload: {
-                userName: matchedUser.userName,
-                Email: matchedUser.Email,
-                ID: matchedUser._id,
-                isLoggedin: matchedUser.isLoggedin,
-              },
-            },
-            "AppTaskSecret"
-          );
+  // const { tokenId, googleId } = req.body;
 
-          res.status(200).json({
-            Message: "welcome back",
-            token,
-            data: { _id: user._id, email: user.Email },
-          });
-          //----------------------------------------
-        } else {
-          const newUser = new userModel({
-            userName: payload.userName,
-            Email: payload.Email,
-            googleId,
-            isVerified: true,
-            password: nanoid(),
-          });
-          const savedUser = await userModel.insertOne(newUser);
-          const token = jwt.sign(
-            {
-              payload: {
-                userName: matchedUser.userName,
-                Email: matchedUser.Email,
-                ID: matchedUser._id,
-                isLoggedin: matchedUser.isLoggedin,
-              },
-            },
-            "AppTaskSecret"
-          );
+  let { userName, Email, password, age, gander, isVerified } = req.body;
+  const user = await userModel.findOne({ Email });
+  if (user) {
+    //----------------------------------------
 
-          res.status(200).json({
-            Message: "welcome back",
-            token,
-            data: { _id: savedUser._id, email: savedUser.Email },
-          });
-        }
-      } else {
-        res.json({ message: "email not verified" });
-      }
-    })
-    .catch((err) => {
-      console.log(err);
+    const token = jwt.sign(
+      {
+        payload: {
+          userName,
+          Email,
+          ID: user._id,
+          isLoggedin: true,
+        },
+      },
+      "AppTaskSecret"
+    );
+
+    res.status(200).json({
+      Message: "welcome back",
+      token,
+      data: { _id: user._id, email: user.Email },
     });
+    //----------------------------------------
+  } else {
+    const savedUser = await userModel.insertOne({
+      userName,
+      Email,
+      age,
+      gender,
+      isVerified: true,
+      password: nanoid(),
+    });
+    const token = jwt.sign(
+      {
+        payload: {
+          userName,
+          Email,
+          ID: savedUser._id,
+          isLoggedin: true,
+        },
+      },
+      "AppTaskSecret"
+    );
+
+    res.status(200).json({
+      Message: "welcome back",
+      token,
+      data: { _id: savedUser._id, email: savedUser.Email },
+    });
+  }
 };
 //----------ByGoogle----------------
 
