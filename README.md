@@ -13,4 +13,4 @@ The Task App Backend is a Node.js and Express-based repository that serves as th
 - MongoDB
 
 **API Endpoints:**
-For more information, you can explore the [Postman documentation](https://web.postman.co/documentation/29508472-224b71b2-51de-4d51-addc-215af2d840b2/publish?workspaceId=98ee0430-c23d-49c0-89f6-f6bb4c2cd10e#content).
+For more information, you can explore the [Postman documentation](https://documenter.getpostman.com/view/29508472/2s9YRGy9jY).
